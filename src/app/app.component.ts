@@ -1,22 +1,44 @@
-import { Component } from '@angular/core';
-
-export interface Post {
-  title: string;
-  text: string;
-}
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
-  search = '';
-  searchField = 'title';
+export class AppComponent implements OnInit {
+  form: FormGroup = new FormGroup({});
 
-  posts: Post[] = [
-    { title: 'Beer', text: 'The best' },
-    { title: 'Bread', text: 'The best 2' },
-    { title: 'JS', text: 'The best 3' },
-  ];
+  ngOnInit() {
+    this.form = new FormGroup({
+      email: new FormControl('', [Validators.email, Validators.required]),
+      password: new FormControl(null, [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+      address: new FormGroup({
+        country: new FormControl('ua'),
+        city: new FormControl('Kyiv', Validators.required),
+      }),
+    });
+  }
+
+  submit() {
+    if (this.form.valid) {
+      console.log('Form: ', this.form);
+      const formData = { ...this.form.value };
+      console.log('Form Data: ', formData);
+    }
+  }
+
+  setCapital() {
+    const cityMap = {
+      ru: 'moscow',
+      ua: 'Kyiv',
+      by: 'minsk',
+    };
+    const cityKey = this.form.get('address').get('country').value;
+    const city = cityMap[cityKey];
+    this.form.patchValue({ address: { city } });
+  }
 }

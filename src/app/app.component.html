@@ -1,13 +1,65 @@
 <div class="container">
-    <h1>Angular Pipes</h1>
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+        <h1>Angular Forms</h1>
 
-    <button class="btn" (click)="searchField = 'title'">Title</button>
-    <button class="btn" (click)="searchField = 'text'">Text</button>
+        <div class="form-control">
+            <label>Email</label>
+            <input type="text" placeholder="Email" formControlName="email">
 
-    <input type="text" [(ngModel)]="search">
+            <div *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="validation">
+                <small *ngIf="form.get('email')?.hasError('required')">
+                    Email field can't be empty
+                </small>
+                <small *ngIf="form.get('email')?.hasError('email')">
+                    Input correct email
+                </small>
+            </div>
+        </div>
 
-    <div class="card" *ngFor="let post of posts | filter:search:searchField">
-        <h2>{{post.title}}</h2>
-        <p>{{post.text}}</p>
-    </div>
+        <div class="form-control">
+            <label>Пароль</label>
+            <input type="password" placeholder="Пароль" formControlName="password">
+            <div class="validation" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+                <small *ngIf="form.get('password')?.hasError('required')">
+                    Password field can't be empty
+                </small>
+                <small *ngIf="form.get('password')?.hasError('minlength')">
+                    Длинна должна быть не менее {{form.get('password').errors.minlength.requiredLength.value}}.
+                    Сейчас количество символов {{form.get('password').errors.minlength.actualLength}}
+                </small>
+            </div>
+        </div>
+
+        <div class="card" formGroupName="address">
+            <h2>Адрес</h2>
+
+            <div class="form-control">
+                <label>Страна</label>
+
+                <select formControlName="country">
+                    <option value="ru">рашка</option>
+                    <option value="ua">Украина</option>
+                    <option value="by">беларусь</option>
+                </select>
+            </div>
+
+            <div class="form-control">
+                <input type="text" formControlName="city" placeholder="City">
+            </div>
+
+            <button class="btn" type="button" (click)="setCapital()">Выбрать столицу</button>
+        </div>
+
+        <div class="card">
+            <h2>Ваши навыки</h2>
+            <button class="btn" type="button">Добавить умение</button>
+            <div class="form-control">
+                <label></label>
+                <input type="text">
+            </div>
+        </div>
+
+        <button class="btn" type="submit" [disabled]="form.invalid">Отправить</button>
+
+    </form>
 </div>
